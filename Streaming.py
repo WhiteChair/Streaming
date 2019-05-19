@@ -23,8 +23,11 @@ odf.head()
 
 #merge review title and text into a single column 
 import pandas as pd
-odf['list']=odf[['review_title','review_text']].values.tolist()
-odf['review_title+text']=odf['list'].apply(''.join)
+odf['review_title+text'] = odf.agg('{0[review_title]}  {0[review_text]}'.format, axis=1)
+
+#odf['list']=odf[['review_title','review_text']].values.tolist()
+#odf['review_title+text']=odf['list'].apply(''.join)
+
 print(odf)
 
 #remove neutral reviews (ranked 3)
