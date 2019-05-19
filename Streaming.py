@@ -41,7 +41,7 @@ df.head()
 #y.head()
 
 #logistic regression model on word count
-#c = CountVectorizer(stop_words = ('the', 'in', 'read', 'pages', 'his', 'was', 'what','would', 'am', 'so', 'is', 'from', 'that', 'will', 'then', 'up', 'still', 'did', 'also', 'through', 'about', 'this', 'you', 'and', 'or', 'for', 'at', 'as', 'to','of', 'a', 'an', 'but', 'when', 'since', 'because'))
+c = CountVectorizer(stop_words = ('the', 'in', 'read', 'pages', 'his', 'was', 'what','would', 'am', 'so', 'is', 'from', 'that', 'will', 'then', 'up', 'still', 'did', 'also', 'through', 'about', 'this', 'you', 'and', 'or', 'for', 'at', 'as', 'to','of', 'a', 'an', 'but', 'when', 'since', 'because'))
 tfidf = TfidfVectorizer(stop_words = 'english')
 
 def text_fit(X, y, model,clf_model,coef_show=1):
