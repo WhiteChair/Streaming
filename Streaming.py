@@ -8,6 +8,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.dummy import DummyClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from string import punctuation
 from sklearn import svm
 from nltk.corpus import stopwords
@@ -22,18 +24,17 @@ odf = pd.read_csv('/Users/Gianina/Documents/MSc/spark/notebooks/bookdataGianinaN
 odf.head()
 
 #merge review title and text into a single column 
-import pandas as pd
-odf['review_title+text'] = odf.agg('{0[review_title]}  {0[review_text]}'.format, axis=1)
+odf['review_title_text'] = odf.agg('{0[review_title]}  {0[review_text]}'.format, axis=1)
 
 #odf['list']=odf[['review_title','review_text']].values.tolist()
-#odf['review_title+text']=odf['list'].apply(''.join)
+#odf['review_title_text']=odf['list'].apply(''.join)
 
 print(odf)
 
 #remove neutral reviews (ranked 3)
 #define positive (1) and negative (0) class
 df = odf[odf['review_score'] != 3]
-X = df['review_title+text']
+X = df['review_title_text']
 y_dict = {1:0, 2:0, 4:1, 5:1}
 y = df['review_score'].map(y_dict)
 df.head()
@@ -80,3 +81,34 @@ text_fit(X, y, tfidf, LogisticRegression())
 # logistic regression model on TFIDF with ngram
 tfidf_n = TfidfVectorizer(ngram_range=(1,2),stop_words = 'english')
 text_fit(X, y, tfidf_n, LogisticRegression())
+
+frames = [X, y]
+df2 = pd.concat(frames, axis=1)
+df2.head(5)
+
+#split into training-validation for NB
+ns_train, ns_test = train_test_split(df2, test_size=0.3)
+ns_train.head(5)
+ns_test.head(5)
+
+#Naive Bayes
+vectorizer = TfidfVectorizer()
+
+ns_train_matrix = vectorizer.fit_transform(ns_train.review_title_text)
+ns_train_label = ns_train.review_score
+ns_test_matrix = vectorizer.transform(ns_test.review_title_text)
+ns_test_label = ns_test.review_score
+
+clf = MultinomialNB()
+clf.fit(ns_train_matrix, ns_train_label)
+
+ns_pred = clf.predict(ns_test_matrix)
+ns_acc = accuracy_score(ns_test_label, ns_pred)
+ns_f1 = f1_score(ns_test_label, ns_pred)
+ns_prec = precision_score(ns_test_label, ns_pred)
+ns_rec = recall_score(ns_test_label, ns_pred)
+
+print('Accuracy: {0:.2f}%'.format(ns_acc*100))
+print('Precision Score: {0:.2f}%'.format(ns_prec*100))
+print('Recall Score: {0:.2f}%'.format(ns_rec*100))
+print('F1 Score: {0:.4f}'.format(ns_f1))
