@@ -4,7 +4,7 @@ library(parallel)
 
 #import data
 cl <- makeCluster(detectCores() - 1)
-json_files<-list.files(path="C:/Users/Hotze/Desktop/sparkstr/", recursive=T, pattern="part*", full.names=T)
+json_files<-list.files(path="C:\\Users\\danie\\Desktop\\spark\\StreamingData\\Unstructured/", recursive=T, pattern="part*", full.names=T)
 json_list<-parLapply(cl,json_files,function(x) rjson::fromJSON(file=x,method = "R"))
 stopCluster(cl)
 
@@ -28,10 +28,11 @@ df$review_score <- as.integer(df$review_score)
 df2 <- df[!duplicated(df$review_text),]
 
 #write csv
-write.csv(df2, file = "bookdata.csv")
+write.csv(df2, file = "C:\\Users\\danie\\Documents\\Daniel Gil\\KULeuven\\Stage 2\\Term 2\\Advanced Analytics\\Assignments\\Streaming\\Data/bookdataDaniel.csv")
 
 #import data check
-datacheck <- read.table("bookdata.csv", header=TRUE, sep=",")
+datacheck <- read.table("C:\\Users\\danie\\Documents\\Daniel Gil\\KULeuven\\Stage 2\\Term 2\\Advanced Analytics\\Assignments\\Streaming\\Data/bookdataDaniel.csv", header=TRUE, sep=",")
 #works
+View(head(datacheck))
 
 
